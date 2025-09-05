@@ -1,19 +1,31 @@
-import { Hono } from "hono";
-import { createRequestHandler } from "react-router";
+import { BrowserRouter } from "react-router";
 
-const app = new Hono();
+ReactDOM.createRoot(root).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+);
 
-// Add more routes here
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router";
 
-app.get("*", (c) => {
-  const requestHandler = createRequestHandler(
-    () => import("virtual:react-router/server-build"),
-    import.meta.env.MODE,
-  );
+let router = createBrowserRouter([
+  {
+    path: "/",
+    Component: Root,
+    loader: loadRootData,
+  },
+]);
 
-  return requestHandler(c.req.raw, {
-    cloudflare: { env: c.env, ctx: c.executionCtx },
-  });
-});
+ReactDOM.createRoot(root).render(
+  <RouterProvider router={router} />,
+);
 
-export default app;
+import { index, route } from "@react-router/dev/routes";
+
+export default [
+  index("./home.tsx"),
+  route("products/:pid", "./product.tsx"),
+];
